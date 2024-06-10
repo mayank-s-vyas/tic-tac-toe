@@ -1,12 +1,9 @@
+const USER = "You";
+const COMPUTER = "Computer";
 
+const USER_DEFAULT_ICON = "O";
 
-const USER = 'You'
-const COMPUTER = 'Computer'
-
-const USER_DEFAULT_ICON = 'O'
-
-const COMP_DEFAULT_ICON = 'X'
-
+const COMP_DEFAULT_ICON = "X";
 
 let userIcon;
 let compIcon;
@@ -14,330 +11,254 @@ let valueIndicesMatch;
 let tossWinner;
 const remainingPlaces = [];
 
-
-
-
-// check if input is valid 
+// check if input is valid
 function takeValidNumberInput() {
-    let userInput = parseInt(prompt("what will be the size of matrix : "))
+  let userInput = parseInt(prompt("what will be the size of matrix : "));
 
-    while (isNaN(userInput) | userInput < 3) {
-        userInput = prompt("Matrix size you entered is not a number greater than 2 , please enter a valid number : ")
-    }
+  while (isNaN(userInput) | (userInput < 3)) {
+    userInput = prompt(
+      "Matrix size you entered is not a number greater than 2 , please enter a valid number : "
+    );
+  }
 
-    console.log(`You have selected the matrix: ${userInput} x ${userInput} `)
+  console.log(`You have selected the matrix: ${userInput} x ${userInput} `);
 
-    return userInput
+  return userInput;
 }
 
 // const matrixSize = takeValidNumberInput();
 
-
 // console.log(matrixSize)
 
 function getTossWinner() {
+  alert("Should we toss the coin?");
 
-    alert("Should we toss the coin?")
+  if (Math.random() > 0.5) {
+    tossWinner = USER;
 
-    if (Math.random() > 0.5) {
+    const iconChoice = prompt(
+      `${USER} won the toss, now please select the icon you want to play with : Enter O or X else we'll choose ${USER_DEFAULT_ICON} for you `
+    );
 
-
-        tossWinner = USER
-
-        const iconChoice = prompt(`${USER} won the toss, now please select the icon you want to play with : Enter O or X else we'll choose ${USER_DEFAULT_ICON} for you `)
-
-        if (iconChoice.toUpperCase() === 'O' | iconChoice.toUpperCase() === 0) {
-
-            userIcon = 'O'
-            compIcon = 'X'
-
-        } else if (iconChoice.toUpperCase() === 'X') {
-
-            userIcon = 'X'
-            compIcon = 'O'
-
-
-        } else {
-            userIcon = USER_DEFAULT_ICON
-            compIcon = COMP_DEFAULT_ICON
-        }
-
-        alert(`You have Chosen to play with : ${userIcon}`)
-
+    if ((iconChoice.toUpperCase() === "O") | (iconChoice.toUpperCase() === 0)) {
+      userIcon = "O";
+      compIcon = "X";
+    } else if (iconChoice.toUpperCase() === "X") {
+      userIcon = "X";
+      compIcon = "O";
     } else {
-
-        alert(`${COMPUTER} won the toss and has chosen to play with ${COMP_DEFAULT_ICON}`)
-
-
-        tossWinner = COMPUTER
-
-        userIcon = USER_DEFAULT_ICON
-        compIcon = COMP_DEFAULT_ICON
-
-
+      userIcon = USER_DEFAULT_ICON;
+      compIcon = COMP_DEFAULT_ICON;
     }
 
-    return tossWinner
+    alert(`You have Chosen to play with : ${userIcon}`);
+  } else {
+    alert(
+      `${COMPUTER} won the toss and has chosen to play with ${COMP_DEFAULT_ICON}`
+    );
 
+    tossWinner = COMPUTER;
+
+    userIcon = USER_DEFAULT_ICON;
+    compIcon = COMP_DEFAULT_ICON;
+  }
+
+  return tossWinner;
 }
 
-
-
-
 function createMatrix(size) {
+  const matrix = [];
 
-    const matrix = []
+  valueIndicesMatch = {};
 
-    valueIndicesMatch = {}
+  let prevNum = 1;
 
+  for (let i = 0; i < size; i++) {
+    const row = [];
 
-    let prevNum = 1
-
-    for (let i = 0; i < size; i++) {
-
-        const row = []
-
-        for (let j = 0; j < size; j++) {
-
-            row.push(prevNum)
-            remainingPlaces.push(prevNum) //updating the choices available for user/computer to opt from
-            valueIndicesMatch[prevNum] = [i, j]
-            prevNum += 1
-        }
-
-        matrix.push(row)
-
+    for (let j = 0; j < size; j++) {
+      row.push(prevNum);
+      remainingPlaces.push(prevNum); //updating the choices available for user/computer to opt from
+      valueIndicesMatch[prevNum] = [i, j];
+      prevNum += 1;
     }
 
-    showMatrix(matrix)
+    matrix.push(row);
+  }
 
-    return matrix
+  showMatrix(matrix);
+
+  return matrix;
 }
 
 // createMatrix(4)
 
-
 function showMatrix(matrixToBePrinted) {
-
-    for (let row of matrixToBePrinted) {
-        console.log(row.join(' | '))
-    }
-    console.log('\n')
+  for (let row of matrixToBePrinted) {
+    console.log(row.join(" | "));
+  }
+  console.log("\n");
 }
-
-
-
-
 
 function userMarkingInput(remainingPlaces) {
+  let num = parseInt(
+    prompt(`your chance please select only from : ${remainingPlaces}`)
+  );
 
-    let num = parseInt(prompt(`your chance please select only from : ${remainingPlaces}`))
-
-    while (!remainingPlaces.includes(num)) {
-        num = parseInt(prompt(`You chose  : ${num}. This input is not valid, please enter options available from  : ${remainingPlaces}`))
-    }
-    return num
-
+  while (!remainingPlaces.includes(num)) {
+    num = parseInt(
+      prompt(
+        `You chose  : ${num}. This input is not valid, please enter options available from  : ${remainingPlaces}`
+      )
+    );
+  }
+  return num;
 }
 
-
-
-
 // console.log(createMatrix(matrixSize))
-
 
 // const remainingPlaces = [1, 2, 3, 4, 4]
 // prompt(`your chance please select only from : ${remainingPlaces}`)
 
-
 function markChoiceInMatrix(inputNum, matrix, inputFrom) {
+  const icon = inputFrom === USER ? userIcon : compIcon;
 
+  const index = remainingPlaces.indexOf(inputNum);
 
-    const icon = inputFrom === USER ? userIcon : compIcon
+  remainingPlaces.splice(index, 1);
 
-    const index = remainingPlaces.indexOf(inputNum)
+  const inputIndicesMatrix = valueIndicesMatch[inputNum];
 
-    remainingPlaces.splice(index, 1)
+  matrix[inputIndicesMatrix[0]][inputIndicesMatrix[1]] = icon;
 
-
-    const inputIndicesMatrix = valueIndicesMatch[inputNum]
-
-    matrix[inputIndicesMatrix[0]][inputIndicesMatrix[1]] = icon
-
-    // console.log(matrix)
-    // console.log(inputIndicesMatrix)
-    showMatrix(matrix)
-
+  // console.log(matrix)
+  // console.log(inputIndicesMatrix)
+  showMatrix(matrix);
 }
 
 function checkWinner(matrix, size) {
+  const firstDiagonal = new Set();
+  const secondDiagonal = new Set();
 
-    const firstDiagonal = new Set()
-    const secondDiagonal = new Set()
+  for (let i = 0; i < size; i++) {
+    const row = new Set();
+    const column = new Set();
 
-    for (let i = 0; i < size; i++) {
+    firstDiagonal.add(matrix[i][i]);
+    secondDiagonal.add(matrix[i][size - 1 - i]);
 
-        const row = new Set()
-        const column = new Set()
-
-        firstDiagonal.add(matrix[i][i])
-        secondDiagonal.add(matrix[i][size - 1 - i])
-
-        for (let j = 0; j < size; j++) {
-
-            row.add(matrix[i][j])
-            column.add(matrix[j][i])
-
-
-
-        }
-
-
-        if (row.size === 1 | column.size === 1) {
-            return true
-        }
-
-
-
-    }
-    // console.log(firstDiagonal)
-    // console.log(secondDiagonal)
-
-    if (firstDiagonal.size === 1 | secondDiagonal.size === 1) {
-
-        return true
+    for (let j = 0; j < size; j++) {
+      row.add(matrix[i][j]);
+      column.add(matrix[j][i]);
     }
 
-    return false
+    if ((row.size === 1) | (column.size === 1)) {
+      return true;
+    }
+  }
+  // console.log(firstDiagonal)
+  // console.log(secondDiagonal)
+
+  if ((firstDiagonal.size === 1) | (secondDiagonal.size === 1)) {
+    return true;
+  }
+
+  return false;
 }
 
-
-
-
-
-const checkTie = (remainingelements) => remainingelements.length === 0 ? true : false
-
-
-
+const checkTie = (remainingelements) =>
+  remainingelements.length === 0 ? true : false;
 
 function generateComputerInput(remainingelements) {
+  const index = Math.floor(Math.random() * remainingelements.length);
 
-    const index = Math.floor((Math.random() * remainingelements.length))
+  console.log(`Computer selected :  ${remainingelements[index]}`);
 
-    console.log(`Computer selected :  ${remainingelements[index]}`)
-
-    return remainingelements[index]
+  return remainingelements[index];
 }
 
+function gameFunctioning(
+  tosswonby,
+  matrix,
+  matrixSizeUserInput,
+  remainingPlaces
+) {
+  if (tosswonby === USER) {
+    markChoiceInMatrix(userMarkingInput(remainingPlaces), matrix, USER);
 
+    if (checkWinner(matrix, matrixSizeUserInput)) {
+      alert("You Won");
 
+      return;
+    } else if (checkTie(remainingPlaces)) {
+      alert("This is a tie");
 
-
-
-
-function gameFunctioning(tosswonby, matrix, matrixSizeUserInput, remainingPlaces) {
-
-    if (tosswonby === USER) {
-
-        markChoiceInMatrix(userMarkingInput(remainingPlaces), matrix, USER);
-
-        if (checkWinner(matrix, matrixSizeUserInput)) {
-
-            alert("You Won")
-
-            return
-
-        } else if (checkTie(remainingPlaces)) {
-
-            alert("This is a tie")
-
-            return
-        }
-
-        markChoiceInMatrix(generateComputerInput(remainingPlaces), matrix, COMPUTER)
-
-        if (checkWinner(matrix, matrixSizeUserInput)) {
-
-            alert("Comp Won")
-
-            return
-
-        } else if (checkTie(remainingPlaces)) {
-
-            alert("This is a tie")
-
-            return
-        }
-
-
-    } else {
-
-        markChoiceInMatrix(generateComputerInput(remainingPlaces), matrix, COMPUTER)
-
-        if (checkWinner(matrix, matrixSizeUserInput)) {
-
-            alert("Comp Won")
-
-            return
-
-        } else if (checkTie(remainingPlaces)) {
-
-            alert("This is a tie")
-
-            return
-        }
-
-        markChoiceInMatrix(userMarkingInput(remainingPlaces), matrix, USER);
-
-        if (checkWinner(matrix, matrixSizeUserInput)) {
-
-            alert("You Won")
-
-            return
-
-        } else if (checkTie(remainingPlaces)) {
-
-            alert("This is a tie")
-
-            return
-        }
-
+      return;
     }
 
+    markChoiceInMatrix(
+      generateComputerInput(remainingPlaces),
+      matrix,
+      COMPUTER
+    );
+
+    if (checkWinner(matrix, matrixSizeUserInput)) {
+      alert("Comp Won");
+
+      return;
+    } else if (checkTie(remainingPlaces)) {
+      alert("This is a tie");
+
+      return;
+    }
+  } else {
+    markChoiceInMatrix(
+      generateComputerInput(remainingPlaces),
+      matrix,
+      COMPUTER
+    );
+
+    if (checkWinner(matrix, matrixSizeUserInput)) {
+      alert("Comp Won");
+
+      return;
+    } else if (checkTie(remainingPlaces)) {
+      alert("This is a tie");
+
+      return;
+    }
+
+    markChoiceInMatrix(userMarkingInput(remainingPlaces), matrix, USER);
+
+    if (checkWinner(matrix, matrixSizeUserInput)) {
+      alert("You Won");
+
+      return;
+    } else if (checkTie(remainingPlaces)) {
+      alert("This is a tie");
+
+      return;
+    }
+  }
 }
-
-
-
-
-
 
 function game() {
+  const matrixSizeUserInput = takeValidNumberInput();
 
+  const matrix = createMatrix(matrixSizeUserInput);
 
-    const matrixSizeUserInput = takeValidNumberInput()
+  showMatrix(matrix);
 
-    const matrix = createMatrix(matrixSizeUserInput)
+  const tosswinner = getTossWinner();
 
-    showMatrix(matrix)
+  console.log(tosswinner);
 
-    const tosswinner = getTossWinner()
-
-    console.log(tosswinner)
-
-
-
-    while (!checkWinner(matrix, matrixSizeUserInput) && !checkTie(remainingPlaces)) {
-
-        gameFunctioning(tosswinner, matrix, matrixSizeUserInput, remainingPlaces);
-    }
-
+  while (
+    !checkWinner(matrix, matrixSizeUserInput) &&
+    !checkTie(remainingPlaces)
+  ) {
+    gameFunctioning(tosswinner, matrix, matrixSizeUserInput, remainingPlaces);
+  }
 }
 
-
-
-game()
-
-
-
-
-
+game();
